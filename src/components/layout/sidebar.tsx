@@ -6,8 +6,12 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Gauge } from "lucide-react";
 import { useState } from "react";
 
+import { useSession } from "@/components/layout/session-provider";
+import { SignOutButton } from "@/components/layout/sign-out-button";
 import { dashboardNav } from "@/config/navigation";
+import { getInitials } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -24,12 +28,15 @@ type SidebarProps = {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
+  const { user, profile } = useSession();
+  const initials = getInitials(profile?.full_name, user.email);
+  const isAccountActive = pathname === "/conta" || pathname.startsWith("/conta/");
 
   return (
     <motion.aside
       animate={{ width: collapsed ? 72 : 260 }}
       transition={{ type: "spring", stiffness: 380, damping: 32 }}
-      className="relative hidden h-screen shrink-0 border-r border-sidebar-border bg-sidebar md:flex md:flex-col"
+      className="fixed inset-y-0 left-0 z-30 hidden h-screen shrink-0 border-r border-sidebar-border bg-sidebar shadow-sm md:flex md:flex-col"
     >
       <div className="flex h-16 items-center gap-3 px-4">
         <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -117,6 +124,55 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           })}
         </nav>
       </ScrollArea>
+
+      <div className="space-y-1 border-t border-sidebar-border p-2">
+        {collapsed ? (
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Link
+                  href="/conta"
+                  className={cn(
+                    "flex items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    isAccountActive
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground",
+                  )}
+                />
+              }
+            >
+              <Avatar className="size-7">
+                <AvatarFallback className="bg-primary/15 text-[10px] font-semibold text-primary">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+            </TooltipTrigger>
+            <TooltipContent side="right">Meu perfil</TooltipContent>
+          </Tooltip>
+        ) : (
+          <Link
+            href="/conta"
+            className={cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+              isAccountActive
+                ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground",
+            )}
+          >
+            <Avatar className="size-7">
+              <AvatarFallback className="bg-primary/15 text-[10px] font-semibold text-primary">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1">
+              <p className="truncate">{profile?.full_name ?? user.email}</p>
+              <p className="truncate text-xs text-muted-foreground">Meu perfil</p>
+            </div>
+          </Link>
+        )}
+
+        <SignOutButton variant="sidebar" showLabel={!collapsed} />
+      </div>
 
       <div className="border-t border-sidebar-border p-2">
         <Button

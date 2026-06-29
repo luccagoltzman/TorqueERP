@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
+import { getUserWithTimeout } from "@/lib/supabase/auth-timeout";
+
 const protectedPaths = [
   "/dashboard",
   "/estoque",
@@ -17,7 +19,27 @@ function isProtectedPath(pathname: string) {
   );
 }
 
+function isPublicPath(pathname: string) {
+  return (
+    pathname === "/" ||
+    pathname.startsWith("/auth/") ||
+    pathname.startsWith("/_next/")
+  );
+}
+
 export async function updateSession(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (isPublicPath(pathname)) {
+    return NextResponse.next({ request });
+  }
+
+  const needsAuth = isProtectedPath(pathname) || authPaths.includes(pathname);
+
+  if (!needsAuth) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -41,11 +63,7 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { pathname } = request.nextUrl;
+  const user = await getUserWithTimeout(supabase);
 
   if (!user && isProtectedPath(pathname)) {
     const url = request.nextUrl.clone();

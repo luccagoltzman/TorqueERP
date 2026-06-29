@@ -1,11 +1,12 @@
 "use client";
 
-import { Bell, Search } from "lucide-react";
+import { Bell } from "lucide-react";
 
 import { MobileNav } from "@/components/layout/mobile-nav";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserMenu } from "@/components/layout/user-menu";
+import { GlobalProductSearch } from "@/components/estoque/global-product-search";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 type DashboardHeaderProps = {
   title: string;
@@ -14,7 +15,7 @@ type DashboardHeaderProps = {
 
 export function DashboardHeader({ title, description }: DashboardHeaderProps) {
   return (
-    <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-20 border-b border-border/60 bg-background/95 backdrop-blur-sm">
       <div className="flex h-16 items-center gap-4 px-4 md:px-6">
         <MobileNav />
 
@@ -29,25 +30,15 @@ export function DashboardHeader({ title, description }: DashboardHeaderProps) {
           )}
         </div>
 
-        <div className="hidden max-w-sm flex-1 md:flex">
-          <div className="relative w-full">
-            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Buscar peças, OS, clientes..."
-              className="pl-9"
-            />
-          </div>
-        </div>
+        <GlobalProductSearch />
+
+        <ThemeToggle />
 
         <Button variant="ghost" size="icon-sm" aria-label="Notificações">
           <Bell className="size-4" />
         </Button>
 
-        <Avatar>
-          <AvatarFallback className="bg-primary/15 text-primary text-xs font-semibold">
-            TE
-          </AvatarFallback>
-        </Avatar>
+        <UserMenu />
       </div>
     </header>
   );

@@ -80,6 +80,62 @@ export type Database = {
           created_at?: string;
         };
       };
+      products: {
+        Row: {
+          id: string;
+          organization_id: string;
+          sku: string | null;
+          name: string;
+          description: string | null;
+          category: string | null;
+          brand: string | null;
+          cost_price: number;
+          sale_price: number;
+          quantity: number;
+          min_quantity: number;
+          unit: string;
+          location: string | null;
+          active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          sku?: string | null;
+          name: string;
+          description?: string | null;
+          category?: string | null;
+          brand?: string | null;
+          cost_price?: number;
+          sale_price?: number;
+          quantity?: number;
+          min_quantity?: number;
+          unit?: string;
+          location?: string | null;
+          active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          sku?: string | null;
+          name?: string;
+          description?: string | null;
+          category?: string | null;
+          brand?: string | null;
+          cost_price?: number;
+          sale_price?: number;
+          quantity?: number;
+          min_quantity?: number;
+          unit?: string;
+          location?: string | null;
+          active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
     Views: Record<string, never>;
     Functions: {
