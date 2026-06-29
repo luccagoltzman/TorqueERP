@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TorqueERP
 
-## Getting Started
+Plataforma SaaS para gestão de autopeças e oficinas mecânicas — estoque, vendas, ordens de serviço, financeiro e atendimento em um único sistema.
 
-First, run the development server:
+## Stack
+
+| Tecnologia | Versão |
+|------------|--------|
+| Next.js | 15.5.x |
+| React | 19 |
+| Tailwind CSS | 4 |
+| shadcn/ui | 4 |
+| Framer Motion | 12 |
+| Supabase | 2.x |
+
+## Começando
 
 ```bash
+# Instalar dependências
+npm install
+
+# Configurar variáveis de ambiente
+cp .env.example .env.local
+# Edite .env.local com URL e anon key do Supabase
+
+# Desenvolvimento
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Rotas
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Rota | Descrição |
+|------|-----------|
+| `/` | Landing page |
+| `/login`, `/register` | Autenticação (UI pronta) |
+| `/dashboard` | Painel principal |
+| `/estoque` | Inventário |
+| `/vendas` | Pedidos e faturamento |
+| `/ordens-servico` | Oficina |
+| `/financeiro` | Contas e fluxo de caixa |
 
-## Learn More
+## Supabase
 
-To learn more about Next.js, take a look at the following resources:
+1. Crie um projeto em [supabase.com](https://supabase.com)
+2. Copie URL e anon key para `.env.local`
+3. Aplique a migration:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+supabase link --project-ref <seu-project-ref>
+supabase db push
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Ou execute o SQL em `supabase/migrations/20250628000000_initial_multi_tenant.sql` no SQL Editor.
 
-## Deploy on Vercel
+## Estrutura
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+  app/
+    (marketing)/     # Landing
+    (auth)/            # Login e registro
+    (dashboard)/       # Módulos do ERP
+  components/
+    layout/            # Sidebar, header
+    motion/            # Animações Framer Motion
+    ui/                # shadcn/ui
+  lib/supabase/        # Client, server, middleware
+  types/               # Tipos do banco
+supabase/migrations/   # Schema multi-tenant
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts
+
+```bash
+npm run dev      # Servidor de desenvolvimento
+npm run build    # Build de produção
+npm run start    # Servidor de produção
+npm run lint     # ESLint
+```
